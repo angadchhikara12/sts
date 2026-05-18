@@ -733,17 +733,13 @@ function initCustomTimePickers() {
                 return;
             }
             
-            const currentHour24 = new Date().getHours();
-            const currentMinute = new Date().getMinutes();
-            const currentPeriod = currentHour24 >= 12 ? 'PM' : 'AM';
-            const currentHour12 = currentHour24 % 12 || 12;
+            const now = new Date();
+            const currentHour24 = now.getHours();
+            const currentMinute = now.getMinutes();
             
             periodColumn.querySelectorAll('.time-option').forEach(opt => {
                 const period = opt.dataset.value;
-                const periodValue = period === 'AM' ? 0 : 1;
-                const currentPeriodValue = currentPeriod === 'AM' ? 0 : 1;
-                
-                if (periodValue < currentPeriodValue) {
+                if (period === 'AM' && currentHour24 >= 12) {
                     opt.style.pointerEvents = 'none';
                     opt.style.opacity = '0.3';
                     opt.style.cursor = 'not-allowed';
@@ -757,27 +753,23 @@ function initCustomTimePickers() {
             hourColumn.querySelectorAll('.time-option').forEach(opt => {
                 const hour = parseInt(opt.dataset.value);
                 const selectedPeriod = periodColumn.querySelector('.time-option.selected');
-                const selectedPeriodValue = selectedPeriod ? (selectedPeriod.dataset.value === 'PM' ? 1 : 0) : (currentPeriod === 'AM' ? 0 : 1);
-                const currentPeriodValue = currentPeriod === 'AM' ? 0 : 1;
+                const period = selectedPeriod ? selectedPeriod.dataset.value : (currentHour24 >= 12 ? 'PM' : 'AM');
                 
-                if (selectedPeriodValue === currentPeriodValue) {
-                    if (hour < currentHour12) {
-                        opt.style.pointerEvents = 'none';
-                        opt.style.opacity = '0.3';
-                        opt.style.cursor = 'not-allowed';
-                    } else {
-                        opt.style.pointerEvents = 'auto';
-                        opt.style.opacity = '1';
-                        opt.style.cursor = 'pointer';
-                    }
-                } else if (selectedPeriodValue > currentPeriodValue) {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
-                } else {
+                let hour24 = hour;
+                if (period === 'PM' && hour !== 12) {
+                    hour24 = hour + 12;
+                } else if (period === 'AM' && hour === 12) {
+                    hour24 = 0;
+                }
+                
+                if (hour24 < currentHour24) {
                     opt.style.pointerEvents = 'none';
                     opt.style.opacity = '0.3';
                     opt.style.cursor = 'not-allowed';
+                } else {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
                 }
             });
             
@@ -786,11 +778,8 @@ function initCustomTimePickers() {
                 const selectedHourEl = hourColumn.querySelector('.time-option.selected');
                 const selectedPeriodEl = periodColumn.querySelector('.time-option.selected');
                 
-                const selectedHourNum = selectedHourEl ? parseInt(selectedHourEl.dataset.value) : currentHour12;
-                const selectedPeriodValue = selectedPeriodEl ? (selectedPeriodEl.dataset.value === 'PM' ? 1 : 0) : (currentPeriod === 'AM' ? 0 : 1);
-                const currentPeriodValue = currentPeriod === 'AM' ? 0 : 1;
-                
-                if (selectedPeriodValue === currentPeriodValue && selectedHourNum === currentHour12) {
+                if (!selectedHourEl || !selectedPeriodEl) {
+                    let hour24 = currentHour24;
                     if (minute <= currentMinute) {
                         opt.style.pointerEvents = 'none';
                         opt.style.opacity = '0.3';
@@ -800,14 +789,37 @@ function initCustomTimePickers() {
                         opt.style.opacity = '1';
                         opt.style.cursor = 'pointer';
                     }
-                } else if (selectedPeriodValue > currentPeriodValue || (selectedPeriodValue === currentPeriodValue && selectedHourNum > currentHour12)) {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
-                } else {
+                    return;
+                }
+                
+                const selectedHour = parseInt(selectedHourEl.dataset.value);
+                const period = selectedPeriodEl.dataset.value;
+                
+                let selectedHour24 = selectedHour;
+                if (period === 'PM' && selectedHour !== 12) {
+                    selectedHour24 = selectedHour + 12;
+                } else if (period === 'AM' && selectedHour === 12) {
+                    selectedHour24 = 0;
+                }
+                
+                if (selectedHour24 < currentHour24) {
                     opt.style.pointerEvents = 'none';
                     opt.style.opacity = '0.3';
                     opt.style.cursor = 'not-allowed';
+                } else if (selectedHour24 === currentHour24) {
+                    if (minute <= currentMinute) {
+                        opt.style.pointerEvents = 'none';
+                        opt.style.opacity = '0.3';
+                        opt.style.cursor = 'not-allowed';
+                    } else {
+                        opt.style.pointerEvents = 'auto';
+                        opt.style.opacity = '1';
+                        opt.style.cursor = 'pointer';
+                    }
+                } else {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
                 }
             });
         }
