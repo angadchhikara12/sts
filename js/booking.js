@@ -368,6 +368,9 @@ function showBookingConfirmation(bookingData) {
             <p class="booking-id">Booking ID: <strong>${bookingData.bookingId}</strong></p>
             <p>Thank you for choosing SAN Transportation Services. A confirmation email has been sent to <strong>${bookingData.email}</strong></p>
             <p>Our team will contact you within 2 hours to confirm availability and provide a final quote.</p>
+            <div class="booking-notice" style="background-color: #fff3cd; color: #856404; padding: 12px 16px; border-radius: 6px; margin: 16px 0; font-size: 14px; border-left: 4px solid #ffc107;">
+                <strong>Notice:</strong> If you haven't seen the confirmation email, please consider checking your Spam folder.
+            </div>
             <div class="modal-actions">
                 <a href="index.html" class="btn btn-secondary">Back to Home</a>
                 <button class="btn btn-primary" onclick="this.closest('.booking-modal').remove()">Close</button>
