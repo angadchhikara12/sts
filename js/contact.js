@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://ktnxwyuukscetpoxjety.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0bnh3eXV1a3NjZXRwb3hqZXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNjQyMDAsImV4cCI6MjA1OTY0MDIwMH0.8Rup8E4Jrl9LFeQMJJSVhnImzr3RAl-DYf0x2VeA4-Y';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0bnh3eXV1a3NjZXRwb3hqZXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NTc5NjYsImV4cCI6MjA5NDAzMzk2Nn0.D2Nv_5FSwl9-4B0zTEsrLyIKOi-75Qq41TFp82nyLt0';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -68,7 +68,7 @@ function initContactForm() {
 
         try {
             const { error: dbError } = await supabaseClient
-                .from('contacts')
+                .from('contact')
                 .insert([
                     {
                         first_name: contactData.firstName,
