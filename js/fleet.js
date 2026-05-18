@@ -3,7 +3,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 async function fetchCars() {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/cars?select=*&isAvailable=eq.true`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/cars?select=*`, {
             method: 'GET',
             headers: {
                 'apikey': SUPABASE_ANON_KEY,
