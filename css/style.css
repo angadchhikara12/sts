@@ -529,6 +529,11 @@ section {
     .nav-controls {
         display: flex !important;
     }
+    
+    /* Hide Book Now button from header on mobile */
+    .nav-controls .nav-cta {
+        display: none !important;
+    }
 }
 
 .navbar .container {
