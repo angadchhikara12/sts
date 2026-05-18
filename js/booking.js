@@ -13,34 +13,45 @@ function initBookingForm() {
     const nextButtons = form.querySelectorAll('.btn-next');
     const prevButtons = form.querySelectorAll('.btn-prev');
     
-    nextButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const currentStep = getCurrentStep();
-            const nextStep = parseInt(this.getAttribute('data-next'));
+    // Handle both click and touch events for mobile
+    function handleNextButton(e) {
+        e.preventDefault();
+        const currentStep = getCurrentStep();
+        const button = e.target.closest('.btn-next');
+        const nextStep = parseInt(button.getAttribute('data-next'));
+        
+        console.log('Next button clicked - Current step:', currentStep, 'Next step:', nextStep);
+        const validationResult = validateCurrentStep(currentStep);
+        console.log('Validation result:', validationResult);
+        
+        if (validationResult) {
+            console.log('Validation passed - moving to step:', nextStep);
+            goToStep(nextStep);
             
-            console.log('Next button clicked - Current step:', currentStep, 'Next step:', nextStep);
-            const validationResult = validateCurrentStep(currentStep);
-            console.log('Validation result:', validationResult);
-            
-            if (validationResult) {
-                console.log('Validation passed - moving to step:', nextStep);
-                goToStep(nextStep);
-                
-                if (nextStep === 4) {
-                    populateSummary();
-                }
-            } else {
-                console.log('Validation failed - staying on step:', currentStep);
+            if (nextStep === 4) {
+                populateSummary();
             }
-        });
+        } else {
+            console.log('Validation failed - staying on step:', currentStep);
+        }
+    }
+    
+    function handlePrevButton(e) {
+        e.preventDefault();
+        const button = e.target.closest('.btn-prev');
+        const prevStep = parseInt(button.getAttribute('data-prev'));
+        console.log('Previous button clicked - moving to:', prevStep);
+        goToStep(prevStep);
+    }
+    
+    nextButtons.forEach(button => {
+        button.addEventListener('click', handleNextButton);
+        button.addEventListener('touchstart', handleNextButton, { passive: false });
     });
     
     prevButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const prevStep = parseInt(this.getAttribute('data-prev'));
-            console.log('Previous button clicked - moving to:', prevStep);
-            goToStep(prevStep);
-        });
+        button.addEventListener('click', handlePrevButton);
+        button.addEventListener('touchstart', handlePrevButton, { passive: false });
     });
     
     form.addEventListener('submit', function(e) {
@@ -56,6 +67,15 @@ function initBookingForm() {
             console.log('Form validation failed - not submitting');
         }
     });
+    
+    // Also add touch support to the submit button
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            form.dispatchEvent(new Event('submit'));
+        }, { passive: false });
+    }
     
     const vehicleOptions = document.querySelectorAll('.vehicle-option input[type="radio"]');
     vehicleOptions.forEach(option => {

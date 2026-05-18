@@ -44,6 +44,16 @@ function initContactForm() {
     const contactForm = document.getElementById('contactForm');
     if (!contactForm) return;
 
+    // Add touch support to submit button
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            contactForm.dispatchEvent(new Event('submit'));
+        }, { passive: false });
+    }
+
+    // Handle form submit
     contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
