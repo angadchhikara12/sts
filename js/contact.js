@@ -212,9 +212,12 @@ function showContactSuccessMessage(contactData) {
             <p>Thank you, <strong>${contactData.firstName}</strong>!</p>
             <p>Your message has been sent to our team at <strong>info@sants.us</strong></p>
             <p>We typically respond within 24 hours during business days.</p>
+            <div class="booking-notice" style="background-color: #fff3cd; color: #856404; padding: 12px 16px; border-radius: 6px; margin: 16px 0; font-size: 14px; border-left: 4px solid #ffc107;">
+                <strong>Notice:</strong> If you haven't seen our reply email, please consider checking your Spam folder.
+            </div>
             <div class="modal-actions">
                 <a href="index.html" class="btn btn-secondary">Back to Home</a>
-                <button class="btn btn-primary" onclick="this.closest('.booking-modal').remove()">Close</button>
+                <button class="btn btn-primary" onclick="this.closest('.contact-modal').remove()">Close</button>
             </div>
         </div>
     `;
