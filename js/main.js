@@ -753,18 +753,15 @@ function initCustomTimePickers() {
             const now = new Date();
             const currentHour24 = now.getHours();
             const currentMinute = now.getMinutes();
+            const currentSecond = now.getSeconds();
             
             periodColumn.querySelectorAll('.time-option').forEach(opt => {
                 const period = opt.dataset.value;
-                if (period === 'AM' && currentHour24 >= 12) {
-                    opt.style.pointerEvents = 'none';
-                    opt.style.opacity = '0.3';
-                    opt.style.cursor = 'not-allowed';
-                } else {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
-                }
+                const isDisabled = (period === 'AM' && currentHour24 >= 12);
+                
+                opt.style.pointerEvents = isDisabled ? 'none' : 'auto';
+                opt.style.opacity = isDisabled ? '0.3' : '1';
+                opt.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
             });
             
             hourColumn.querySelectorAll('.time-option').forEach(opt => {
@@ -779,15 +776,18 @@ function initCustomTimePickers() {
                     hour24 = 0;
                 }
                 
+                let isDisabled;
                 if (hour24 < currentHour24) {
-                    opt.style.pointerEvents = 'none';
-                    opt.style.opacity = '0.3';
-                    opt.style.cursor = 'not-allowed';
+                    isDisabled = true;
+                } else if (hour24 === currentHour24) {
+                    isDisabled = true;
                 } else {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
+                    isDisabled = false;
                 }
+                
+                opt.style.pointerEvents = isDisabled ? 'none' : 'auto';
+                opt.style.opacity = isDisabled ? '0.3' : '1';
+                opt.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
             });
             
             minuteColumn.querySelectorAll('.time-option').forEach(opt => {
@@ -795,50 +795,66 @@ function initCustomTimePickers() {
                 const selectedHourEl = hourColumn.querySelector('.time-option.selected');
                 const selectedPeriodEl = periodColumn.querySelector('.time-option.selected');
                 
-                if (!selectedHourEl || !selectedPeriodEl) {
-                    let hour24 = currentHour24;
-                    if (minute <= currentMinute) {
-                        opt.style.pointerEvents = 'none';
-                        opt.style.opacity = '0.3';
-                        opt.style.cursor = 'not-allowed';
-                    } else {
-                        opt.style.pointerEvents = 'auto';
-                        opt.style.opacity = '1';
-                        opt.style.cursor = 'pointer';
+                let hourToCheck = currentHour24;
+                let isDisabled;
+                
+                if (selectedHourEl && selectedPeriodEl) {
+                    const selectedHour = parseInt(selectedHourEl.dataset.value);
+                    const period = selectedPeriodEl.dataset.value;
+                    
+                    hourToCheck = selectedHour;
+                    if (period === 'PM' && selectedHour !== 12) {
+                        hourToCheck = selectedHour + 12;
+                    } else if (period === 'AM' && selectedHour === 12) {
+                        hourToCheck = 0;
                     }
-                    return;
-                }
-                
-                const selectedHour = parseInt(selectedHourEl.dataset.value);
-                const period = selectedPeriodEl.dataset.value;
-                
-                let selectedHour24 = selectedHour;
-                if (period === 'PM' && selectedHour !== 12) {
-                    selectedHour24 = selectedHour + 12;
-                } else if (period === 'AM' && selectedHour === 12) {
-                    selectedHour24 = 0;
-                }
-                
-                if (selectedHour24 < currentHour24) {
-                    opt.style.pointerEvents = 'none';
-                    opt.style.opacity = '0.3';
-                    opt.style.cursor = 'not-allowed';
-                } else if (selectedHour24 === currentHour24) {
-                    if (minute <= currentMinute) {
-                        opt.style.pointerEvents = 'none';
-                        opt.style.opacity = '0.3';
-                        opt.style.cursor = 'not-allowed';
+                    
+                    if (hourToCheck < currentHour24) {
+                        isDisabled = true;
+                    } else if (hourToCheck === currentHour24) {
+                        if (minute < currentMinute) {
+                            isDisabled = true;
+                        } else if (minute === currentMinute) {
+                            isDisabled = true;
+                        } else {
+                            isDisabled = false;
+                        }
                     } else {
-                        opt.style.pointerEvents = 'auto';
-                        opt.style.opacity = '1';
-                        opt.style.cursor = 'pointer';
+                        isDisabled = false;
                     }
                 } else {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
+                    if (minute < currentMinute) {
+                        isDisabled = true;
+                    } else if (minute === currentMinute) {
+                        isDisabled = true;
+                    } else {
+                        isDisabled = false;
+                    }
                 }
+                
+                opt.style.pointerEvents = isDisabled ? 'none' : 'auto';
+                opt.style.opacity = isDisabled ? '0.3' : '1';
+                opt.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
             });
+        }
+        
+        let timeUpdateInterval;
+        function startTimeUpdateInterval() {
+            if (timeUpdateInterval) {
+                clearInterval(timeUpdateInterval);
+            }
+            timeUpdateInterval = setInterval(() => {
+                const dateInput = document.getElementById('pickupDate');
+                if (dateInput && dateInput.value) {
+                    const selectedDate = new Date(dateInput.value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (selectedDate.getTime() === today.getTime()) {
+                        updateDisabledTimes();
+                    }
+                }
+            }, 1000);
         }
         
         function updateSelection(type) {
@@ -879,12 +895,16 @@ function initCustomTimePickers() {
         function openPicker() {
             picker.classList.add('open');
             updateDisabledTimes();
+            startTimeUpdateInterval();
             document.addEventListener('click', handleOutsideClick);
         }
         
         function closePicker() {
             picker.classList.remove('open');
             document.removeEventListener('click', handleOutsideClick);
+            if (timeUpdateInterval) {
+                clearInterval(timeUpdateInterval);
+            }
         }
         
         function handleOutsideClick(e) {
