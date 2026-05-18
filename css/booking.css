@@ -815,7 +815,6 @@ input[type="time"]::-moz-calendar-picker-dropdown:hover {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
     cursor: pointer;
-    min-height: 64px;
     position: relative;
 }
 
@@ -983,7 +982,6 @@ input[type="time"]::-moz-calendar-picker-dropdown:hover {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
     cursor: pointer;
-    min-height: 64px;
     position: relative;
 }
 
@@ -1207,18 +1205,16 @@ textarea:focus {
 
 .form-group select {
     width: 100%;
-    padding: 20px 25px;
+    padding: 15px 20px;
     background: rgba(13, 13, 13, 0.8);
     border: 2px solid rgba(221, 186, 94, 0.3);
     border-radius: 15px;
     color: var(--white);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-family: 'Inter', sans-serif;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
     cursor: pointer;
-    min-height: 64px;
-    height: 64px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1230,11 +1226,11 @@ textarea:focus {
 
 #passengerCount,
 #vehicleType {
-    height: 64px !important;
-    min-height: 64px !important;
-    padding: 20px 25px !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 15px 20px !important;
     padding-right: 55px !important;
-    font-size: 1.05rem !important;
+    font-size: 1rem !important;
 }
 
 /* Custom Dropdown - Replaces native select */
