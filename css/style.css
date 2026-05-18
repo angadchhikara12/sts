@@ -534,6 +534,10 @@ section {
     .nav-controls .nav-cta {
         display: none !important;
     }
+    
+    .nav-controls a.nav-cta {
+        display: none !important;
+    }
 }
 
 .navbar .container {
