@@ -518,6 +518,19 @@ section {
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Nav Controls - Bell + Book Now (visible always) */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+@media (max-width: 1180px) {
+    .nav-controls {
+        display: flex !important;
+    }
+}
+
 .navbar .container {
     display: flex;
     justify-content: space-between;
