@@ -531,11 +531,7 @@ section {
     }
     
     /* Hide Book Now button from header on mobile */
-    .nav-controls .nav-cta {
-        display: none !important;
-    }
-    
-    .nav-controls a.nav-cta {
+    .nav-controls .header-book-now {
         display: none !important;
     }
 }
