@@ -705,6 +705,84 @@ function initCustomTimePickers() {
             });
         }
         
+        function updateDisabledTimes() {
+            const dateInput = document.getElementById('pickupDate');
+            if (!dateInput || !dateInput.value) return;
+            
+            const selectedDate = new Date(dateInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate.getTime() !== today.getTime()) {
+                hourColumn.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                });
+                minuteColumn.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                });
+                periodColumn.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                });
+                return;
+            }
+            
+            const currentHour24 = today.getHours();
+            const currentMinute = today.getMinutes();
+            const currentPeriod = currentHour24 >= 12 ? 'PM' : 'AM';
+            const currentHour12 = currentHour24 % 12 || 12;
+            
+            periodColumn.querySelectorAll('.time-option').forEach(opt => {
+                const period = opt.dataset.value;
+                if (period === 'AM' && currentPeriod === 'PM') {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.3';
+                    opt.style.cursor = 'not-allowed';
+                } else {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                }
+            });
+            
+            hourColumn.querySelectorAll('.time-option').forEach(opt => {
+                const hour = parseInt(opt.dataset.value);
+                if (currentPeriod === 'AM') {
+                    if (hour < currentHour12) {
+                        opt.style.pointerEvents = 'none';
+                        opt.style.opacity = '0.3';
+                        opt.style.cursor = 'not-allowed';
+                    } else {
+                        opt.style.pointerEvents = 'auto';
+                        opt.style.opacity = '1';
+                    }
+                } else {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                }
+            });
+            
+            minuteColumn.querySelectorAll('.time-option').forEach(opt => {
+                const minute = parseInt(opt.dataset.value);
+                const selectedHourNum = parseInt(selectedHour);
+                
+                if (selectedHourNum === currentHour12 && currentPeriod === currentPeriod) {
+                    if (minute <= currentMinute) {
+                        opt.style.pointerEvents = 'none';
+                        opt.style.opacity = '0.3';
+                        opt.style.cursor = 'not-allowed';
+                    } else {
+                        opt.style.pointerEvents = 'auto';
+                        opt.style.opacity = '1';
+                    }
+                } else {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.opacity = '1';
+                }
+            });
+        }
+        
         function updateSelection(type) {
             const column = type === 'hour' ? hourColumn : 
                           type === 'minute' ? minuteColumn : periodColumn;
@@ -742,6 +820,7 @@ function initCustomTimePickers() {
         
         function openPicker() {
             picker.classList.add('open');
+            updateDisabledTimes();
             document.addEventListener('click', handleOutsideClick);
         }
         
@@ -771,6 +850,11 @@ function initCustomTimePickers() {
                 openPicker();
             }
         });
+        
+        const dateInput = document.getElementById('pickupDate');
+        if (dateInput) {
+            dateInput.addEventListener('change', updateDisabledTimes);
+        }
         
         populateOptions(hourColumn, hours, 'hour');
         populateOptions(minuteColumn, minutes, 'minute');
@@ -833,6 +917,13 @@ function initCustomDatePickers() {
                     dayEl.classList.add('today');
                 }
                 
+                if (date < today) {
+                    dayEl.classList.add('disabled');
+                    dayEl.style.pointerEvents = 'none';
+                    dayEl.style.opacity = '0.3';
+                    dayEl.style.cursor = 'not-allowed';
+                }
+                
                 if (selectedDate && 
                     selectedDate.getDate() === day && 
                     selectedDate.getMonth() === viewMonth && 
@@ -840,10 +931,12 @@ function initCustomDatePickers() {
                     dayEl.classList.add('selected');
                 }
                 
-                dayEl.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    selectDate(date);
-                });
+                if (date >= today) {
+                    dayEl.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        selectDate(date);
+                    });
+                }
                 
                 daysContainer.appendChild(dayEl);
             }
