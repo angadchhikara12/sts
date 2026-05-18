@@ -551,9 +551,14 @@ function initHeroVideo() {
     const heroVideo = document.getElementById('heroVideo');
     
     if (!heroVideo) return;
+
+    heroVideo.classList.add('video-hidden');
     
     function tryPlayVideo() {
-        heroVideo.play().catch(() => {});
+        heroVideo.play().then(() => {
+            heroVideo.classList.remove('video-hidden');
+        }).catch(() => {
+        });
     }
 
     window.addEventListener("scroll", tryPlayVideo, { once: true });
