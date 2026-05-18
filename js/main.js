@@ -549,6 +549,7 @@ function initHeroSlideshow() {
 
 function initHeroVideo() {
     const heroVideo = document.getElementById('heroVideo');
+    const heroPoster = document.querySelector('.hero-poster');
     
     if (!heroVideo) return;
 
@@ -557,6 +558,7 @@ function initHeroVideo() {
     function tryPlayVideo() {
         heroVideo.play().then(() => {
             heroVideo.classList.remove('video-hidden');
+            if (heroPoster) heroPoster.style.display = 'none';
         }).catch(() => {
         });
     }
