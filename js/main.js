@@ -920,7 +920,7 @@ function initCustomDatePickers() {
                 if (date < today) {
                     dayEl.classList.add('disabled');
                     dayEl.style.pointerEvents = 'none';
-                    dayEl.style.opacity = '0.3';
+                    dayEl.style.color = '#6b7280';
                     dayEl.style.cursor = 'not-allowed';
                 }
                 
