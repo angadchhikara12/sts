@@ -466,15 +466,17 @@ async function sendBookingConfirmationEmail(bookingData, bookingCode) {
 
         console.log('Sending booking confirmation email via EmailJS:', templateParams);
 
-        if (typeof emailjs !== 'undefined' && emailjs.send) {
-            await emailjs.send('service_g3l10te', 'template_bk9pui8', templateParams);
-            console.log('Booking confirmation email sent successfully');
-        } else {
-            console.log('EmailJS not loaded - skipping email send');
+        if (typeof emailjs === 'undefined' || !emailjs.send) {
+            console.error('EmailJS is not loaded or not available');
+            throw new Error('EmailJS is not loaded. Please refresh the page and try again.');
         }
+
+        await emailjs.send('service_g3l10te', 'template_bk9pui8', templateParams);
+        console.log('Booking confirmation email sent successfully');
 
     } catch (error) {
         console.error('Error sending booking confirmation email:', error);
+        throw error;
     }
 }
 

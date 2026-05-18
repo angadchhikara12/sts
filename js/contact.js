@@ -179,13 +179,18 @@ async function sendContactEmail(contactData) {
 
     console.log('Sending contact email to info@sants.us via EmailJS:', templateParams);
 
-    if (typeof emailjs !== 'undefined' && emailjs.send) {
+    if (typeof emailjs === 'undefined' || !emailjs.send) {
+        console.error('EmailJS is not loaded or not available');
+        throw new Error('EmailJS is not loaded. Please refresh the page and try again.');
+    }
+
+    try {
         await emailjs.send('service_g3l10te', 'template_8bmg7ti', templateParams);
         console.log('Contact email sent successfully');
         return { success: true };
-    } else {
-        console.log('EmailJS not loaded - skipping email send');
-        return { success: false, message: 'EmailJS not available' };
+    } catch (emailError) {
+        console.error('EmailJS send error:', emailError);
+        throw new Error('Failed to send email. Please try again or email us directly at info@sants.us');
     }
 }
 
