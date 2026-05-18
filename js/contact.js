@@ -1,3 +1,7 @@
+const SUPABASE_URL = 'https://ktnxwyuukscetpoxjety.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0bnh3eXV1a3NjZXRwb3hqZXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNjQyMDAsImV4cCI6MjA1OTY0MDIwMH0.8Rup8E4Jrl9LFeQMJJSVhnImzr3RAl-DYf0x2VeA4-Y';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 document.addEventListener('DOMContentLoaded', function() {
     initFAQAccordion();
     initContactForm();
@@ -53,6 +57,27 @@ function initContactForm() {
         if (!isValid) return;
 
         try {
+            const { error: dbError } = await supabaseClient
+                .from('contacts')
+                .insert([
+                    {
+                        first_name: contactData.firstName,
+                        last_name: contactData.lastName,
+                        email: contactData.email,
+                        phone: contactData.phone || null,
+                        subject: contactData.subject,
+                        message: contactData.message,
+                        created_at: new Date().toISOString()
+                    }
+                ]);
+
+            if (dbError) {
+                console.error('Database error:', dbError);
+                throw new Error('Failed to save to database');
+            }
+
+            console.log('Contact saved to database successfully');
+
             await sendContactEmail(contactData);
 
             if (typeof addNotification === 'function') {
@@ -166,9 +191,9 @@ async function sendContactEmail(contactData) {
 
 function showContactSuccessMessage(contactData) {
     const successModal = document.createElement('div');
-    successModal.className = 'booking-modal';
+    successModal.className = 'contact-modal';
     successModal.innerHTML = `
-        <div class="booking-modal-content">
+        <div class="contact-modal-content">
             <div class="modal-icon">
                 <i class="fas fa-paper-plane"></i>
             </div>
