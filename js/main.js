@@ -697,6 +697,7 @@ function initCustomTimePickers() {
                     }
                     
                     updateSelection(type);
+                    updateDisabledTimes();
                     updateDisplay();
                     updateHiddenInput();
                 });
@@ -717,38 +718,49 @@ function initCustomTimePickers() {
                 hourColumn.querySelectorAll('.time-option').forEach(opt => {
                     opt.style.pointerEvents = 'auto';
                     opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
                 });
                 minuteColumn.querySelectorAll('.time-option').forEach(opt => {
                     opt.style.pointerEvents = 'auto';
                     opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
                 });
                 periodColumn.querySelectorAll('.time-option').forEach(opt => {
                     opt.style.pointerEvents = 'auto';
                     opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
                 });
                 return;
             }
             
-            const currentHour24 = today.getHours();
-            const currentMinute = today.getMinutes();
+            const currentHour24 = new Date().getHours();
+            const currentMinute = new Date().getMinutes();
             const currentPeriod = currentHour24 >= 12 ? 'PM' : 'AM';
             const currentHour12 = currentHour24 % 12 || 12;
             
             periodColumn.querySelectorAll('.time-option').forEach(opt => {
                 const period = opt.dataset.value;
-                if (period === 'AM' && currentPeriod === 'PM') {
+                const periodValue = period === 'AM' ? 0 : 1;
+                const currentPeriodValue = currentPeriod === 'AM' ? 0 : 1;
+                
+                if (periodValue < currentPeriodValue) {
                     opt.style.pointerEvents = 'none';
                     opt.style.opacity = '0.3';
                     opt.style.cursor = 'not-allowed';
                 } else {
                     opt.style.pointerEvents = 'auto';
                     opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
                 }
             });
             
             hourColumn.querySelectorAll('.time-option').forEach(opt => {
                 const hour = parseInt(opt.dataset.value);
-                if (currentPeriod === 'AM') {
+                const selectedPeriod = periodColumn.querySelector('.time-option.selected');
+                const selectedPeriodValue = selectedPeriod ? (selectedPeriod.dataset.value === 'PM' ? 1 : 0) : (currentPeriod === 'AM' ? 0 : 1);
+                const currentPeriodValue = currentPeriod === 'AM' ? 0 : 1;
+                
+                if (selectedPeriodValue === currentPeriodValue) {
                     if (hour < currentHour12) {
                         opt.style.pointerEvents = 'none';
                         opt.style.opacity = '0.3';
@@ -756,18 +768,29 @@ function initCustomTimePickers() {
                     } else {
                         opt.style.pointerEvents = 'auto';
                         opt.style.opacity = '1';
+                        opt.style.cursor = 'pointer';
                     }
-                } else {
+                } else if (selectedPeriodValue > currentPeriodValue) {
                     opt.style.pointerEvents = 'auto';
                     opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
+                } else {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.3';
+                    opt.style.cursor = 'not-allowed';
                 }
             });
             
             minuteColumn.querySelectorAll('.time-option').forEach(opt => {
                 const minute = parseInt(opt.dataset.value);
-                const selectedHourNum = parseInt(selectedHour);
+                const selectedHourEl = hourColumn.querySelector('.time-option.selected');
+                const selectedPeriodEl = periodColumn.querySelector('.time-option.selected');
                 
-                if (selectedHourNum === currentHour12 && currentPeriod === currentPeriod) {
+                const selectedHourNum = selectedHourEl ? parseInt(selectedHourEl.dataset.value) : currentHour12;
+                const selectedPeriodValue = selectedPeriodEl ? (selectedPeriodEl.dataset.value === 'PM' ? 1 : 0) : (currentPeriod === 'AM' ? 0 : 1);
+                const currentPeriodValue = currentPeriod === 'AM' ? 0 : 1;
+                
+                if (selectedPeriodValue === currentPeriodValue && selectedHourNum === currentHour12) {
                     if (minute <= currentMinute) {
                         opt.style.pointerEvents = 'none';
                         opt.style.opacity = '0.3';
@@ -775,10 +798,16 @@ function initCustomTimePickers() {
                     } else {
                         opt.style.pointerEvents = 'auto';
                         opt.style.opacity = '1';
+                        opt.style.cursor = 'pointer';
                     }
-                } else {
+                } else if (selectedPeriodValue > currentPeriodValue || (selectedPeriodValue === currentPeriodValue && selectedHourNum > currentHour12)) {
                     opt.style.pointerEvents = 'auto';
                     opt.style.opacity = '1';
+                    opt.style.cursor = 'pointer';
+                } else {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.3';
+                    opt.style.cursor = 'not-allowed';
                 }
             });
         }
