@@ -1205,13 +1205,25 @@ textarea:focus {
     transform: translateY(-3px);
 }
 
-select {
+.form-group select {
+    width: 100%;
+    padding: 20px 25px;
+    background: rgba(13, 13, 13, 0.8);
+    border: 2px solid rgba(221, 186, 94, 0.3);
+    border-radius: 15px;
+    color: var(--white);
+    font-size: 1.05rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
     cursor: pointer;
+    min-height: 64px;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ddba5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23DDA95E' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 20px center;
-    background-size: 20px;
+    background-position: right 22px center;
     padding-right: 55px;
 }
 
