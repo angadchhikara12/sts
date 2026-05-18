@@ -1521,6 +1521,66 @@ textarea {
     font-size: 0.85rem;
 }
 
+/* Unavailable Vehicle Styling */
+.vehicle-option.unavailable .vehicle-option-label {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+    pointer-events: none;
+}
+
+.vehicle-option.unavailable:hover .vehicle-option-label {
+    transform: none;
+    border-color: rgba(221, 186, 94, 0.3);
+    box-shadow: none;
+}
+
+.vehicle-option.unavailable .vehicle-option-image img {
+    filter: brightness(0.5) contrast(0.8) grayscale(100%);
+}
+
+.vehicle-unavailable-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    z-index: 10;
+}
+
+/* Available Vehicle Badge */
+.vehicle-option.available .vehicle-option-label {
+    border-color: rgba(40, 167, 69, 0.5);
+}
+
+.vehicle-available-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    z-index: 10;
+}
+
+.vehicle-option-specs i {
+    color: var(--gold-accent);
+    font-size: 0.85rem;
+}
+
 .vehicle-option-price {
     font-size: 1.1rem;
     color: var(--gold-accent);
