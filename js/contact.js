@@ -159,14 +159,11 @@ function showFieldError(field, message) {
 
 async function sendContactEmail(contactData) {
     const templateParams = {
-        to_name: 'SAN Transportation Team',
-        from_name: `${contactData.firstName} ${contactData.lastName}`.trim(),
-        from_email: contactData.email,
-        reply_to: contactData.email,
-        phone_number: contactData.phone || 'Not provided',
+        name: `${contactData.firstName} ${contactData.lastName}`.trim(),
+        email: contactData.email,
         subject: contactData.subject,
         message: contactData.message,
-        submitted_date: new Date().toLocaleDateString('en-US', {
+        time: new Date().toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -176,7 +173,7 @@ async function sendContactEmail(contactData) {
         })
     };
 
-    console.log('Sending contact email to info@sants.us via EmailJS:', templateParams);
+    console.log('Sending contact email via EmailJS:', templateParams);
 
     if (typeof emailjs === 'undefined' || !emailjs.send) {
         console.error('EmailJS is not loaded or not available');

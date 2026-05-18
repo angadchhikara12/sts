@@ -452,14 +452,14 @@ async function sendBookingConfirmationEmail(bookingData, bookingCode) {
         });
 
         const templateParams = {
-            to_name: `${bookingData.firstName} ${bookingData.lastName || ''}`.trim(),
-            booking_code: bookingCode,
-            service_type: bookingData.serviceType,
-            vehicle: bookingData.vehicle,
-            pickup_date: formattedDate,
-            pickup_time: bookingData.pickupTime,
-            pickup_location: bookingData.pickupLocation,
-            dropoff_location: bookingData.dropoffLocation,
+            name: `${bookingData.firstName} ${bookingData.lastName || ''}`.trim(),
+            email: bookingData.email,
+            order_id: bookingCode,
+            service: bookingData.serviceType,
+            pickup: bookingData.pickupLocation,
+            dropoff: bookingData.dropoffLocation,
+            date: formattedDate,
+            time: bookingData.pickupTime,
             passengers: bookingData.passengers
         };
 
