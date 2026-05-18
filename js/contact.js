@@ -159,7 +159,6 @@ function showFieldError(field, message) {
 
 async function sendContactEmail(contactData) {
     const templateParams = {
-        to_email: 'info@sants.us',
         to_name: 'SAN Transportation Team',
         from_name: `${contactData.firstName} ${contactData.lastName}`.trim(),
         from_email: contactData.email,
@@ -185,7 +184,7 @@ async function sendContactEmail(contactData) {
     }
 
     try {
-        await emailjs.send('service_g3l10te', 'template_8bmg7ti', templateParams);
+        await emailjs.send('service_g3l10te', 'template_8bmg7ti', templateParams, 'lrCm2SvIUDYFyHLup');
         console.log('Contact email sent successfully');
         return { success: true };
     } catch (emailError) {

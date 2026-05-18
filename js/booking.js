@@ -452,7 +452,6 @@ async function sendBookingConfirmationEmail(bookingData, bookingCode) {
         });
 
         const templateParams = {
-            to_email: bookingData.email,
             to_name: `${bookingData.firstName} ${bookingData.lastName || ''}`.trim(),
             booking_code: bookingCode,
             service_type: bookingData.serviceType,
@@ -471,7 +470,7 @@ async function sendBookingConfirmationEmail(bookingData, bookingCode) {
             throw new Error('EmailJS is not loaded. Please refresh the page and try again.');
         }
 
-        await emailjs.send('service_g3l10te', 'template_bk9pui8', templateParams);
+        await emailjs.send('service_g3l10te', 'template_bk9pui8', templateParams, 'lrCm2SvIUDYFyHLup');
         console.log('Booking confirmation email sent successfully');
 
     } catch (error) {
