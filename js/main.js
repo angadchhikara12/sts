@@ -708,7 +708,24 @@ function initCustomTimePickers() {
         
         function updateDisabledTimes() {
             const dateInput = document.getElementById('pickupDate');
-            if (!dateInput || !dateInput.value) return;
+            if (!dateInput || !dateInput.value) {
+                hourColumn.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.3';
+                    opt.style.cursor = 'not-allowed';
+                });
+                minuteColumn.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.3';
+                    opt.style.cursor = 'not-allowed';
+                });
+                periodColumn.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.3';
+                    opt.style.cursor = 'not-allowed';
+                });
+                return;
+            }
             
             const selectedDate = new Date(dateInput.value);
             const today = new Date();
