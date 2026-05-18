@@ -207,6 +207,107 @@
     }
 }
 
+/* Success Message Styling */
+.booking-modal-content.success .modal-icon {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    animation: successPulse 2s ease-in-out infinite;
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
+    }
+}
+
+.booking-modal-content.success h2 {
+    color: #28a745;
+    font-family: 'Playfair Display', serif;
+}
+
+.booking-modal-content.success .booking-id {
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.booking-modal-content.success .booking-id strong {
+    color: #28a745;
+}
+
+/* Error Message Styling */
+.booking-modal-content.error .modal-icon {
+    background: linear-gradient(135deg, #dc3545 0%, #f8d7da 100%);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.booking-modal-content.error h2 {
+    color: #dc3545;
+    font-family: 'Playfair Display', serif;
+}
+
+.booking-modal-content.error p {
+    color: #f8d7da;
+}
+
+.booking-modal-content.error p strong {
+    color: #ffffff;
+}
+
+.error-message-box {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(248, 215, 218, 0.1) 100%);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-left: 4px solid #dc3545;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+}
+
+.error-message-box p {
+    color: #f8d7da !important;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.error-message-box strong {
+    color: #ffffff !important;
+}
+
+/* Contact Modal Success Styling */
+.contact-modal-content.success .modal-icon {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    animation: successPulse 2s ease-in-out infinite;
+}
+
+.contact-modal-content.success h2 {
+    color: #28a745;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Contact Modal Error Styling */
+.contact-modal-content.error .modal-icon {
+    background: linear-gradient(135deg, #dc3545 0%, #f8d7da 100%);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    animation: errorShake 0.5s ease-in-out;
+}
+
+.contact-modal-content.error h2 {
+    color: #dc3545;
+    font-family: 'Playfair Display', serif;
+}
+
 /* Notification Bell Styles */
 .notification-bell {
     position: relative;

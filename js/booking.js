@@ -316,9 +316,7 @@ async function submitBooking() {
         
         if (error) {
             console.error(error);
-            if (typeof addNotification === 'function') {
-                addNotification('Booking Failed', 'Failed to submit booking. Please try again.', 'error');
-            }
+            showBookingError('We could not save your booking information. Please try again or contact us at info@sants.us');
             return;
         }
         
@@ -342,9 +340,7 @@ async function submitBooking() {
         
     } catch (err) {
         console.error(err);
-        if (typeof addNotification === 'function') {
-            addNotification('System Error', 'An unexpected error occurred. Please try again.', 'error');
-        }
+        showBookingError('An unexpected error occurred. Please try again or contact us at info@sants.us');
     }
 }
 
@@ -360,7 +356,7 @@ function showBookingConfirmation(bookingData) {
     const modal = document.createElement('div');
     modal.classList.add('booking-modal');
     modal.innerHTML = `
-        <div class="booking-modal-content">
+        <div class="booking-modal-content success">
             <div class="modal-icon">
                 <i class="fas fa-check-circle"></i>
             </div>
@@ -374,6 +370,39 @@ function showBookingConfirmation(bookingData) {
             <div class="modal-actions">
                 <a href="index.html" class="btn btn-secondary">Back to Home</a>
                 <button class="btn btn-primary" onclick="this.closest('.booking-modal').remove()">Close</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 100);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+function showBookingError(errorMessage) {
+    const modal = document.createElement('div');
+    modal.classList.add('booking-modal');
+    modal.innerHTML = `
+        <div class="booking-modal-content error">
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2>Booking Failed</h2>
+            <div class="error-message-box">
+                <p>${errorMessage}</p>
+            </div>
+            <p>Please try again or contact us directly at <strong>info@sants.us</strong></p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="this.closest('.booking-modal').remove()">Try Again</button>
+                <a href="contact.html" class="btn btn-primary">Contact Us</a>
             </div>
         </div>
     `;

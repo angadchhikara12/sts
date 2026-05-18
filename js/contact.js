@@ -204,7 +204,7 @@ function showContactSuccessMessage(contactData) {
     const successModal = document.createElement('div');
     successModal.className = 'contact-modal';
     successModal.innerHTML = `
-        <div class="contact-modal-content">
+        <div class="contact-modal-content success">
             <div class="modal-icon">
                 <i class="fas fa-paper-plane"></i>
             </div>
