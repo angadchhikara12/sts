@@ -1660,7 +1660,7 @@ textarea {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-top: 5px;
+    margin-top: -10px;
     padding-top: 20px;
     border-top: 1px solid rgba(221, 186, 94, 0.2);
 }
