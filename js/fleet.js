@@ -1,5 +1,4 @@
-const SUPABASE_URL = 'https://ktnxwyuukscetpoxjety.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0bnh3eXV1a3NjZXRwb3hqZXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NTc5NjYsImV4cCI6MjA5NDAzMzk2Nn0.D2Nv_5FSwl9-4B0zTEsrLyIKOi-75Qq41TFp82nyLt0';
+// SUPABASE_URL and SUPABASE_ANON_KEY loaded from config.js
 
 async function fetchCars() {
     try {

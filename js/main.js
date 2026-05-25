@@ -1,4 +1,6 @@
+console.log('main.js DOMContentLoaded handler running');
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('main.js DOMContentLoaded fired');
     initNavbar();
     initMobileMenu();
     initSmoothScroll();
@@ -663,9 +665,9 @@ function initCustomTimePickers() {
         const hiddenInput = picker.querySelector('input[type="hidden"]');
         const display = picker.querySelector('.custom-time-picker-display');
         const dropdown = picker.querySelector('.custom-time-picker-dropdown');
-        const hourColumn = picker.querySelector('.hour-column .column-options');
-        const minuteColumn = picker.querySelector('.minute-column .column-options');
-        const periodColumn = picker.querySelector('.period-column .column-options');
+        const hourCol = picker.querySelector('.hour-column');
+        const minuteCol = picker.querySelector('.minute-column');
+        const periodCol = picker.querySelector('.period-column');
         
         if (!hiddenInput || !display || !dropdown) return;
         
@@ -677,199 +679,24 @@ function initCustomTimePickers() {
         const minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
         const periods = ['AM', 'PM'];
         
-        function populateOptions(container, options, type) {
-            container.innerHTML = '';
-            options.forEach(opt => {
-                const optionEl = document.createElement('div');
-                optionEl.classList.add('time-option');
-                optionEl.textContent = opt;
-                optionEl.setAttribute('data-value', opt);
-                
-                optionEl.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    if (type === 'hour') {
-                        selectedHour = opt;
-                    } else if (type === 'minute') {
-                        selectedMinute = opt;
-                    } else if (type === 'period') {
-                        selectedPeriod = opt;
-                    }
-                    
-                    updateSelection(type);
-                    updateDisabledTimes();
-                    updateDisplay();
-                    updateHiddenInput();
-                });
-                
-                container.appendChild(optionEl);
-            });
+        function setValue(type, value) {
+            if (type === 'hour') selectedHour = value;
+            else if (type === 'minute') selectedMinute = value;
+            else if (type === 'period') selectedPeriod = value;
+            updateDisplays();
+            updateHiddenInput();
+            const btn = picker.querySelector('.time-set-btn');
+            if (btn) btn.disabled = !(selectedHour && selectedMinute && selectedPeriod);
         }
         
-        function updateDisabledTimes() {
-            const dateInput = document.getElementById('pickupDate');
-            if (!dateInput || !dateInput.value) {
-                hourColumn.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.pointerEvents = 'none';
-                    opt.style.opacity = '0.3';
-                    opt.style.cursor = 'not-allowed';
-                });
-                minuteColumn.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.pointerEvents = 'none';
-                    opt.style.opacity = '0.3';
-                    opt.style.cursor = 'not-allowed';
-                });
-                periodColumn.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.pointerEvents = 'none';
-                    opt.style.opacity = '0.3';
-                    opt.style.cursor = 'not-allowed';
-                });
-                return;
-            }
+        function updateDisplays() {
+            const hd = hourCol.querySelector('.time-value-display');
+            const md = minuteCol.querySelector('.time-value-display');
+            const pd = periodCol.querySelector('.time-value-display');
+            if (hd) hd.textContent = selectedHour || '--';
+            if (md) md.textContent = selectedMinute || '--';
+            if (pd) pd.textContent = selectedPeriod || '--';
             
-            const selectedDate = new Date(dateInput.value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (selectedDate.getTime() !== today.getTime()) {
-                hourColumn.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
-                });
-                minuteColumn.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
-                });
-                periodColumn.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.pointerEvents = 'auto';
-                    opt.style.opacity = '1';
-                    opt.style.cursor = 'pointer';
-                });
-                return;
-            }
-            
-            const now = new Date();
-            const currentHour24 = now.getHours();
-            const currentMinute = now.getMinutes();
-            const currentSecond = now.getSeconds();
-            
-            periodColumn.querySelectorAll('.time-option').forEach(opt => {
-                const period = opt.dataset.value;
-                const isDisabled = (period === 'AM' && currentHour24 >= 12);
-                
-                opt.style.pointerEvents = isDisabled ? 'none' : 'auto';
-                opt.style.opacity = isDisabled ? '0.3' : '1';
-                opt.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
-            });
-            
-            hourColumn.querySelectorAll('.time-option').forEach(opt => {
-                const hour = parseInt(opt.dataset.value);
-                const selectedPeriod = periodColumn.querySelector('.time-option.selected');
-                const period = selectedPeriod ? selectedPeriod.dataset.value : (currentHour24 >= 12 ? 'PM' : 'AM');
-                
-                let hour24 = hour;
-                if (period === 'PM' && hour !== 12) {
-                    hour24 = hour + 12;
-                } else if (period === 'AM' && hour === 12) {
-                    hour24 = 0;
-                }
-                
-                let isDisabled;
-                if (hour24 < currentHour24) {
-                    isDisabled = true;
-                } else if (hour24 === currentHour24) {
-                    isDisabled = true;
-                } else {
-                    isDisabled = false;
-                }
-                
-                opt.style.pointerEvents = isDisabled ? 'none' : 'auto';
-                opt.style.opacity = isDisabled ? '0.3' : '1';
-                opt.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
-            });
-            
-            minuteColumn.querySelectorAll('.time-option').forEach(opt => {
-                const minute = parseInt(opt.dataset.value);
-                const selectedHourEl = hourColumn.querySelector('.time-option.selected');
-                const selectedPeriodEl = periodColumn.querySelector('.time-option.selected');
-                
-                let hourToCheck = currentHour24;
-                let isDisabled;
-                
-                if (selectedHourEl && selectedPeriodEl) {
-                    const selectedHour = parseInt(selectedHourEl.dataset.value);
-                    const period = selectedPeriodEl.dataset.value;
-                    
-                    hourToCheck = selectedHour;
-                    if (period === 'PM' && selectedHour !== 12) {
-                        hourToCheck = selectedHour + 12;
-                    } else if (period === 'AM' && selectedHour === 12) {
-                        hourToCheck = 0;
-                    }
-                    
-                    if (hourToCheck < currentHour24) {
-                        isDisabled = true;
-                    } else if (hourToCheck === currentHour24) {
-                        if (minute < currentMinute) {
-                            isDisabled = true;
-                        } else if (minute === currentMinute) {
-                            isDisabled = true;
-                        } else {
-                            isDisabled = false;
-                        }
-                    } else {
-                        isDisabled = false;
-                    }
-                } else {
-                    if (minute < currentMinute) {
-                        isDisabled = true;
-                    } else if (minute === currentMinute) {
-                        isDisabled = true;
-                    } else {
-                        isDisabled = false;
-                    }
-                }
-                
-                opt.style.pointerEvents = isDisabled ? 'none' : 'auto';
-                opt.style.opacity = isDisabled ? '0.3' : '1';
-                opt.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
-            });
-        }
-        
-        let timeUpdateInterval;
-        function startTimeUpdateInterval() {
-            if (timeUpdateInterval) {
-                clearInterval(timeUpdateInterval);
-            }
-            timeUpdateInterval = setInterval(() => {
-                const dateInput = document.getElementById('pickupDate');
-                if (dateInput && dateInput.value) {
-                    const selectedDate = new Date(dateInput.value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    
-                    if (selectedDate.getTime() === today.getTime()) {
-                        updateDisabledTimes();
-                    }
-                }
-            }, 1000);
-        }
-        
-        function updateSelection(type) {
-            const column = type === 'hour' ? hourColumn : 
-                          type === 'minute' ? minuteColumn : periodColumn;
-            
-            column.querySelectorAll('.time-option').forEach(opt => {
-                const isSelected = (type === 'hour' && opt.dataset.value === selectedHour) ||
-                                  (type === 'minute' && opt.dataset.value === selectedMinute) ||
-                                  (type === 'period' && opt.dataset.value === selectedPeriod);
-                opt.classList.toggle('selected', isSelected);
-            });
-        }
-        
-        function updateDisplay() {
             if (selectedHour && selectedMinute && selectedPeriod) {
                 display.innerHTML = `<span class="time-value">${selectedHour}:${selectedMinute} ${selectedPeriod}</span><i class="fas fa-clock time-icon"></i>`;
             } else {
@@ -880,11 +707,8 @@ function initCustomTimePickers() {
         function updateHiddenInput() {
             if (selectedHour && selectedMinute && selectedPeriod) {
                 let hour24 = parseInt(selectedHour);
-                if (selectedPeriod === 'PM' && hour24 !== 12) {
-                    hour24 += 12;
-                } else if (selectedPeriod === 'AM' && hour24 === 12) {
-                    hour24 = 0;
-                }
+                if (selectedPeriod === 'PM' && hour24 !== 12) hour24 += 12;
+                else if (selectedPeriod === 'AM' && hour24 === 12) hour24 = 0;
                 hiddenInput.value = `${hour24.toString().padStart(2, '0')}:${selectedMinute}`;
                 hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
             } else {
@@ -892,18 +716,128 @@ function initCustomTimePickers() {
             }
         }
         
+        const arrowUpdaters = {};
+        
+        function setupColumn(col, options, type, initial) {
+            const upBtn = col.querySelector('.time-arrow-up');
+            const downBtn = col.querySelector('.time-arrow-down');
+            const displayEl = col.querySelector('.time-value-display');
+            if (!upBtn || !downBtn || !displayEl) return;
+            
+            let idx = -1;
+            if (initial !== undefined) {
+                const found = options.indexOf(initial);
+                if (found !== -1) {
+                    idx = found;
+                    if (type === 'hour') selectedHour = options[idx];
+                    else if (type === 'minute') selectedMinute = options[idx];
+                    else if (type === 'period') selectedPeriod = options[idx];
+                    displayEl.textContent = options[idx];
+                }
+            }
+            
+            function isMinuteEnabled(val) {
+                const dateInput = document.getElementById('pickupDate');
+                if (!dateInput || !dateInput.value) return false;
+                const selectedDate = new Date(dateInput.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (selectedDate.getTime() !== today.getTime()) return true;
+                const now = new Date();
+                const currentHour24 = now.getHours();
+                const currentMinute = now.getMinutes();
+                let h24 = parseInt(selectedHour);
+                if (selectedPeriod === 'PM' && h24 !== 12) h24 += 12;
+                else if (selectedPeriod === 'AM' && h24 === 12) h24 = 0;
+                if (h24 < currentHour24) return false;
+                if (h24 > currentHour24) return true;
+                return parseInt(val) > currentMinute;
+            }
+            
+            function updateArrows() {
+                upBtn.style.opacity = idx > 0 ? '1' : '0.3';
+                upBtn.style.pointerEvents = idx > 0 ? 'auto' : 'none';
+                if (type === 'minute') {
+                    const enabled = idx < options.length - 1 && isMinuteEnabled(options[idx + 1]);
+                    downBtn.style.opacity = enabled ? '1' : '0.3';
+                    downBtn.style.pointerEvents = enabled ? 'auto' : 'none';
+                } else if (type === 'hour') {
+                    const enabled = idx < options.length - 1;
+                    downBtn.style.opacity = enabled ? '1' : '0.3';
+                    downBtn.style.pointerEvents = enabled ? 'auto' : 'none';
+                } else {
+                    downBtn.style.opacity = idx < options.length - 1 ? '1' : '0.3';
+                    downBtn.style.pointerEvents = idx < options.length - 1 ? 'auto' : 'none';
+                }
+            }
+            
+            function doStep(dir) {
+                const next = idx + dir;
+                if (next < 0 || next >= options.length) return;
+                if (type === 'minute' && dir > 0 && !isMinuteEnabled(options[next])) return;
+                if (type === 'hour' && dir > 0) {
+                    const dateInput = document.getElementById('pickupDate');
+                    if (dateInput && dateInput.value) {
+                        const selectedDate = new Date(dateInput.value);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (selectedDate.getTime() === today.getTime()) {
+                            const now = new Date();
+                            const currentHour24 = now.getHours();
+                            let h24 = parseInt(options[next]);
+                            if (selectedPeriod === 'PM' && h24 !== 12) h24 += 12;
+                            else if (selectedPeriod === 'AM' && h24 === 12) h24 = 0;
+                            if (h24 <= currentHour24) return;
+                        }
+                    }
+                }
+                idx = next;
+                setValue(type, options[idx]);
+                updateArrows();
+                Object.values(arrowUpdaters).forEach(fn => fn());
+            }
+            
+            upBtn.addEventListener('click', function(e) { e.stopPropagation(); doStep(-1); });
+            downBtn.addEventListener('click', function(e) { e.stopPropagation(); doStep(1); });
+            displayEl.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (idx === -1) { idx = 0; setValue(type, options[0]); updateArrows(); }
+            });
+            
+            arrowUpdaters[type] = updateArrows;
+            updateArrows();
+        }
+        
         function openPicker() {
             picker.classList.add('open');
-            updateDisabledTimes();
-            startTimeUpdateInterval();
+            // Compute default time: 1 hour ahead, rounded to next 5-min boundary
+            const def = new Date(Date.now() + 3600000);
+            def.setMinutes(Math.ceil(def.getMinutes() / 5) * 5);
+            let h12 = def.getHours() % 12 || 12;
+            const hr = h12.toString().padStart(2, '0');
+            const min = def.getMinutes().toString().padStart(2, '0');
+            const per = def.getHours() >= 12 ? 'PM' : 'AM';
+            setupColumn(hourCol, hours, 'hour', hr);
+            setupColumn(minuteCol, minutes, 'minute', min);
+            setupColumn(periodCol, periods, 'period', per);
+            updateDisplays();
+            updateHiddenInput();
+            const setBtn = picker.querySelector('.time-set-btn');
+            if (setBtn) {
+                setBtn.disabled = !(selectedHour && selectedMinute && selectedPeriod);
+                setBtn._closeHandler = function() { closePicker(); };
+                setBtn.addEventListener('click', setBtn._closeHandler);
+            }
             document.addEventListener('click', handleOutsideClick);
         }
         
         function closePicker() {
             picker.classList.remove('open');
             document.removeEventListener('click', handleOutsideClick);
-            if (timeUpdateInterval) {
-                clearInterval(timeUpdateInterval);
+            const setBtn = picker.querySelector('.time-set-btn');
+            if (setBtn && setBtn._closeHandler) {
+                setBtn.removeEventListener('click', setBtn._closeHandler);
+                delete setBtn._closeHandler;
             }
         }
         
@@ -915,13 +849,9 @@ function initCustomTimePickers() {
         
         display.addEventListener('click', function(e) {
             e.stopPropagation();
-            
-            document.querySelectorAll('.custom-time-picker.open').forEach(openPicker => {
-                if (openPicker !== picker) {
-                    openPicker.classList.remove('open');
-                }
+            document.querySelectorAll('.custom-time-picker.open').forEach(op => {
+                if (op !== picker) op.classList.remove('open');
             });
-            
             if (picker.classList.contains('open')) {
                 closePicker();
             } else {
@@ -929,16 +859,36 @@ function initCustomTimePickers() {
             }
         });
         
-        const dateInput = document.getElementById('pickupDate');
-        if (dateInput) {
-            dateInput.addEventListener('change', updateDisabledTimes);
-        }
+        updateDisplays();
         
-        populateOptions(hourColumn, hours, 'hour');
-        populateOptions(minuteColumn, minutes, 'minute');
-        populateOptions(periodColumn, periods, 'period');
-        
-        updateDisplay();
+        // Sync picker display when hidden input changes externally (e.g. form restore)
+        let syncing = false;
+        hiddenInput.addEventListener('change', function() {
+            if (syncing) return;
+            syncing = true;
+            if (this.value) {
+                const parts = this.value.split(':');
+                if (parts.length === 2) {
+                    const h24 = parseInt(parts[0]);
+                    const min = parts[1];
+                    selectedHour = (h24 % 12 || 12).toString().padStart(2, '0');
+                    selectedMinute = min;
+                    selectedPeriod = h24 >= 12 ? 'PM' : 'AM';
+                    updateHiddenInput();
+                    updateDisplays();
+                    const btn = picker.querySelector('.time-set-btn');
+                    if (btn) btn.disabled = false;
+                }
+            } else {
+                selectedHour = '';
+                selectedMinute = '';
+                selectedPeriod = '';
+                updateDisplays();
+                const btn = picker.querySelector('.time-set-btn');
+                if (btn) btn.disabled = true;
+            }
+            syncing = false;
+        });
     });
 }
 
@@ -1035,6 +985,7 @@ function initCustomDatePickers() {
             updateDisplay();
             updateHiddenInput();
             renderCalendar();
+            closePicker();
         }
         
         function updateDisplay() {
@@ -1131,5 +1082,23 @@ function initCustomDatePickers() {
         
         renderCalendar();
         updateDisplay();
+        
+        // Sync picker display when hidden input changes externally (e.g. form restore)
+        hiddenInput.addEventListener('change', function() {
+            if (this.value) {
+                const parts = this.value.split('-');
+                if (parts.length === 3) {
+                    selectedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    viewMonth = selectedDate.getMonth();
+                    viewYear = selectedDate.getFullYear();
+                    updateDisplay();
+                    renderCalendar();
+                }
+            } else {
+                selectedDate = null;
+                updateDisplay();
+                renderCalendar();
+            }
+        });
     });
 }

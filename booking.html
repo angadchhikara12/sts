@@ -119,9 +119,17 @@
                     <div class="progress-line"></div>
                     <div class="progress-step" data-step="4">
                         <div class="step-number">4</div>
-                        <span>Confirm</span>
+                        <span>Payment</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step" data-step="5">
+                        <div class="step-number">5</div>
+                        <span>Review</span>
                     </div>
                 </div>
+                <div class="booking-content">
+                <div class="booking-main-row">
+                <div class="booking-form-wrapper">
 
                 <form class="booking-form" id="bookingForm">
                     <div class="booking-step active" data-step="1">
@@ -135,7 +143,7 @@
                                     <option value="">Select service type</option>
                                     <option value="airport-pickup">Airport Pickup</option>
                                     <option value="airport-dropoff">Airport Drop-off</option>
-                                    <option value="hourly">Hourly Charter</option>
+                                    <option value="hourly">Hourly Chauffeur</option>
                                     <option value="point-to-point">Point to Point</option>
                                     <option value="wedding">Wedding Service</option>
                                     <option value="corporate">Corporate Event</option>
@@ -185,18 +193,25 @@
                                         <div class="time-picker-columns">
                                             <div class="time-column hour-column">
                                                 <div class="column-header">Hour</div>
-                                                <div class="column-options"></div>
+                                                <button type="button" class="time-arrow time-arrow-up"><i class="fas fa-chevron-up"></i></button>
+                                                <div class="time-value-display">--</div>
+                                                <button type="button" class="time-arrow time-arrow-down"><i class="fas fa-chevron-down"></i></button>
                                             </div>
                                             <div class="time-separator">:</div>
                                             <div class="time-column minute-column">
                                                 <div class="column-header">Minute</div>
-                                                <div class="column-options"></div>
+                                                <button type="button" class="time-arrow time-arrow-up"><i class="fas fa-chevron-up"></i></button>
+                                                <div class="time-value-display">--</div>
+                                                <button type="button" class="time-arrow time-arrow-down"><i class="fas fa-chevron-down"></i></button>
                                             </div>
                                             <div class="time-column period-column">
                                                 <div class="column-header">Period</div>
-                                                <div class="column-options"></div>
+                                                <button type="button" class="time-arrow time-arrow-up"><i class="fas fa-chevron-up"></i></button>
+                                                <div class="time-value-display">--</div>
+                                                <button type="button" class="time-arrow time-arrow-down"><i class="fas fa-chevron-down"></i></button>
                                             </div>
                                         </div>
+                                        <button type="button" class="time-set-btn" disabled>SET</button>
                                     </div>
                                 </div>
                             </div>
@@ -204,14 +219,52 @@
                         
                         <div class="form-group">
                             <label for="pickupLocation">Pickup Location *</label>
-                            <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter pickup address" required>
+                            <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter pickup address" required autocomplete="off">
+                            <div class="address-suggestions" id="pickupSuggestions"></div>
                         </div>
-                        
-                        <div class="form-group">
+
+                        <div id="stopsContainer"></div>
+                        <div class="form-group" id="addStopGroup" style="display:none">
+                            <button type="button" class="btn btn-outline" id="addStopBtn">
+                                <i class="fas fa-plus"></i> Add Stop
+                            </button>
+                        </div>
+
+                        <div class="form-group" id="dropoffGroup">
                             <label for="dropoffLocation">Drop-off Location *</label>
-                            <input type="text" id="dropoffLocation" name="dropoffLocation" placeholder="Enter destination address" required>
+                            <input type="text" id="dropoffLocation" name="dropoffLocation" placeholder="Enter destination address" required autocomplete="off">
+                            <div class="address-suggestions" id="dropoffSuggestions"></div>
                         </div>
-                        
+
+                        <div class="form-group" id="differentDropoffGroup" style="display:none">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="differentDropoff" name="differentDropoff">
+                                <label for="differentDropoff">Different dropoff location?</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="toggle-row">
+                                <label class="toggle-label">
+                                    <i class="fas fa-wheelchair" style="color:var(--gold-accent);font-size:1.1rem"></i>
+                                    <span>Accessible Vehicle Needed</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="accessibleVehicle" name="accessibleVehicle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="child-seat-row">
+                                <button type="button" class="btn btn-outline btn-sm" id="addChildSeatBtn">
+                                    <i class="fas fa-child"></i> Add Child Seat
+                                </button>
+                            </div>
+                            <div id="childSeatsContainer"></div>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="passengers">Number of Passengers *</label>
@@ -251,11 +304,6 @@
                             <textarea id="specialRequests" name="specialRequests" rows="3" placeholder="Any special requirements or requests..."></textarea>
                         </div>
                         
-                        <div class="form-navigation">
-                            <button type="button" class="btn btn-primary btn-next" data-next="2">
-                                Continue <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
                     </div>
 
                     <div class="booking-step" data-step="2">
@@ -275,6 +323,7 @@
                                             <span><i class="fas fa-user"></i> 3 Passengers</span>
                                             <span><i class="fas fa-suitcase"></i> 2 Luggage</span>
                                         </div>
+                                        <div class="vehicle-option-price">$4.50/mi <span class="vehicle-price-detail">+ fuel surcharge</span></div>
                                     </div>
                                     <div class="vehicle-unavailable-badge">Unavailable</div>
                                 </label>
@@ -292,6 +341,7 @@
                                             <span><i class="fas fa-user"></i> 6 Passengers</span>
                                             <span><i class="fas fa-suitcase"></i> 4 Luggage</span>
                                         </div>
+                                        <div class="vehicle-option-price">$4.00/mi <span class="vehicle-price-detail">+ fuel surcharge</span></div>
                                     </div>
                                     <div class="vehicle-unavailable-badge">Unavailable</div>
                                 </label>
@@ -309,6 +359,7 @@
                                             <span><i class="fas fa-user"></i> 7 Passengers</span>
                                             <span><i class="fas fa-suitcase"></i> 5 Luggage</span>
                                         </div>
+                                        <div class="vehicle-option-price">$3.50/mi <span class="vehicle-price-detail">+ fuel surcharge</span></div>
                                     </div>
                                     <div class="vehicle-available-badge">Available</div>
                                 </label>
@@ -326,6 +377,7 @@
                                             <span><i class="fas fa-user"></i> 6 Passengers</span>
                                             <span><i class="fas fa-suitcase"></i> 5 Luggage</span>
                                         </div>
+                                        <div class="vehicle-option-price">$3.75/mi <span class="vehicle-price-detail">+ fuel surcharge</span></div>
                                     </div>
                                     <div class="vehicle-unavailable-badge">Unavailable</div>
                                 </label>
@@ -343,6 +395,7 @@
                                             <span><i class="fas fa-user"></i> 3 Passengers</span>
                                             <span><i class="fas fa-suitcase"></i> 2 Luggage</span>
                                         </div>
+                                        <div class="vehicle-option-price">$4.25/mi <span class="vehicle-price-detail">+ fuel surcharge</span></div>
                                     </div>
                                     <div class="vehicle-unavailable-badge">Unavailable</div>
                                 </label>
@@ -358,22 +411,15 @@
                                         <h4>Rivian R1S</h4>
                                         <div class="vehicle-option-specs">
                                             <span><i class="fas fa-user"></i> 6 Passengers</span>
-                                            <span><i class="fas fa-suitcase"></i> 3 Luggage</span>
+                                            <span><i class="fas fa-suitcase"></i> 4 Luggage</span>
                                         </div>
+                                        <div class="vehicle-option-price">$3.50/mi <span class="vehicle-price-detail">+ fuel surcharge</span></div>
                                     </div>
                                     <div class="vehicle-unavailable-badge">Unavailable</div>
                                 </label>
                             </div>
                         </div>
                         
-                        <div class="form-navigation">
-                            <button type="button" class="btn btn-secondary btn-prev" data-prev="1">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
-                            <button type="button" class="btn btn-primary btn-next" data-next="3">
-                                Continue <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
                     </div>
 
                     <div class="booking-step" data-step="3">
@@ -397,8 +443,8 @@
                                 <input type="email" id="email" name="email" required>
                             </div>
                             <div class="form-group">
-                                <label for="phone">Phone Number *</label>
-                                <input type="tel" id="phone" name="phone" required>
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone">
                             </div>
                         </div>
                         
@@ -417,17 +463,105 @@
                             <label for="terms">I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a> *</label>
                         </div>
                         
-                        <div class="form-navigation">
-                            <button type="button" class="btn btn-secondary btn-prev" data-prev="2">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
-                            <button type="button" class="btn btn-primary btn-next" data-next="4">
-                                Review Booking <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
                     </div>
 
                     <div class="booking-step" data-step="4">
+                        <h2>Payment <span>Details</span></h2>
+                        <p class="step-description">Review pricing and enter payment information</p>
+
+
+                        <div class="payment-pricing">
+                            <h3><i class="fas fa-receipt"></i> Price Breakdown</h3>
+                            <div class="pricing-row">
+                                <span>Distance</span>
+                                <span id="paymentDistance">-</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Est. Time</span>
+                                <span id="paymentEta">-</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Mileage Rate</span>
+                                <span id="paymentRate">$3.50/mi</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Base Fare</span>
+                                <span id="paymentBaseFare">-</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Fuel Surcharge (10%)</span>
+                                <span id="paymentFuelSurcharge">-</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Standard Gratuity (18%)</span>
+                                <span id="paymentGratuity">-</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Flat Fee</span>
+                                <span id="paymentFlatFee">$25.00</span>
+                            </div>
+                            <div class="pricing-row pricing-total">
+                                <span>Total</span>
+                                <span id="paymentTotal">-</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-card">
+                            <h3><i class="fas fa-credit-card"></i> Card Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardName">Name on Card</label>
+                                    <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" inputmode="numeric" maxlength="19" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardExpiry">Expiry Date</label>
+                                    <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardCvc">CVC</label>
+                                    <input type="text" id="cardCvc" name="cardCvc" placeholder="123" inputmode="numeric" maxlength="4" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-billing">
+                            <h3><i class="fas fa-map-pin"></i> Billing Address</h3>
+                            <div class="form-group">
+                                <label for="billingAddress">Street Address</label>
+                                <input type="text" id="billingAddress" name="billingAddress" placeholder="123 Main St" autocomplete="off">
+                                <div class="address-suggestions" id="billingSuggestions"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="billingCity">City</label>
+                                    <input type="text" id="billingCity" name="billingCity" placeholder="City">
+                                </div>
+                                <div class="form-group">
+                                    <label for="billingState">State</label>
+                                    <input type="text" id="billingState" name="billingState" placeholder="CA">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="billingZip">ZIP Code</label>
+                                    <input type="text" id="billingZip" name="billingZip" placeholder="12345" maxlength="10">
+                                </div>
+                                <div class="form-group">
+                                    <label for="billingCountry">Country</label>
+                                    <input type="text" id="billingCountry" name="billingCountry" placeholder="United States">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="booking-step" data-step="5">
                         <h2>Confirm Your <span>Booking</span></h2>
                         <p class="step-description">Review and submit your reservation</p>
                         
@@ -482,6 +616,50 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="summary-section">
+                                <h3><i class="fas fa-cog"></i> Extras</h3>
+                                <div class="summary-grid">
+                                    <div class="summary-item">
+                                        <span class="summary-label">Accessibility & Child Seats</span>
+                                        <span class="summary-value" id="summaryExtras">None</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-section">
+                                <h3><i class="fas fa-receipt"></i> Pricing</h3>
+                                <div class="summary-grid">
+                                    <div class="summary-item">
+                                        <span class="summary-label">Distance</span>
+                                        <span class="summary-value" id="summaryPricingDistance">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Mileage Rate</span>
+                                        <span class="summary-value" id="summaryPricingRate">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Base Fare</span>
+                                        <span class="summary-value" id="summaryPricingBase">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Fuel Surcharge (10%)</span>
+                                        <span class="summary-value" id="summaryPricingFuel">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Standard Gratuity (18%)</span>
+                                        <span class="summary-value" id="summaryPricingGratuity">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Flat Fee</span>
+                                        <span class="summary-value" id="summaryPricingFlat">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label" style="font-weight:700;color:var(--gold-accent)">Total</span>
+                                        <span class="summary-value" id="summaryPricingTotal" style="font-weight:700;color:var(--gold-accent)">-</span>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="summary-note">
                                 <i class="fas fa-info-circle"></i>
@@ -489,16 +667,37 @@
                             </div>
                         </div>
                         
-                        <div class="form-navigation">
-                            <button type="button" class="btn btn-secondary btn-prev" data-prev="3">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-check"></i> Confirm Booking
-                            </button>
-                        </div>
                     </div>
                 </form>
+                </div>
+                <div class="booking-map-wrapper">
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Map Under Development</h3>
+                        <p>Apple Maps integration coming soon. Your route will be displayed here.</p>
+                    </div>
+                    <div class="map-info" id="mapInfo">
+                        <div class="map-info-row">
+                            <span class="map-distance" id="mapDistance"></span>
+                            <span class="map-time" id="mapTime"></span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="form-navigation" id="stepNav">
+                    <button type="button" class="btn btn-secondary btn-prev" id="navBack" style="display:none">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <div class="nav-right">
+                    <button type="button" class="btn btn-primary btn-next" id="navNext">
+                        Continue <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="navSubmit" style="display:none" form="bookingForm">
+                        <i class="fas fa-check"></i> Confirm Booking
+                    </button>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </section>
@@ -610,7 +809,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>emailjs.init('lrCm2SvIUDYFyHLup');</script>
+    <script src="js/config.js"></script>
+    <script>emailjs.init(EMAILJS_PUBLIC_KEY);</script>
     <script src="js/main.js"></script>
         <script src="js/booking.js"></script>
     <script src="js/validation.js"></script>

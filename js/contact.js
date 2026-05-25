@@ -68,7 +68,7 @@ function initContactForm() {
 
         try {
             const { error: dbError } = await supabaseClient
-                .from('contact')
+                .from('Contact')
                 .insert([
                     {
                         first_name: contactData.firstName,
@@ -191,7 +191,7 @@ async function sendContactEmail(contactData) {
     }
 
     try {
-        await emailjs.send('service_g3l10te', 'template_8bmg7ti', templateParams, 'lrCm2SvIUDYFyHLup');
+        await emailjs.send('service_g3l10te', 'template_8bmg7ti', templateParams, EMAILJS_PUBLIC_KEY);
         console.log('Contact email sent successfully');
         return { success: true };
     } catch (emailError) {
