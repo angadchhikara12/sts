@@ -101,6 +101,15 @@
     <section class="section">
         <div class="container">
             <div class="booking-container">
+                <div class="step-dropdown-wrapper">
+                    <select id="stepDropdown" class="step-dropdown">
+                        <option value="1">Step 1 — Trip Details</option>
+                        <option value="2">Step 2 — Vehicle</option>
+                        <option value="3">Step 3 — Personal Info</option>
+                        <option value="4">Step 4 — Payment</option>
+                        <option value="5">Step 5 — Review</option>
+                    </select>
+                </div>
                 <div class="booking-progress">
                     <div class="progress-step active" data-step="1">
                         <div class="step-number">1</div>
@@ -240,6 +249,20 @@
                             <div class="checkbox-group">
                                 <input type="checkbox" id="differentDropoff" name="differentDropoff">
                                 <label for="differentDropoff">Different dropoff location?</label>
+                            </div>
+                        </div>
+
+                        <div class="booking-map-wrapper">
+                            <div class="map-placeholder">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <h3>Map Under Development</h3>
+                                <p>Apple Maps integration coming soon. Your route will be displayed here.</p>
+                            </div>
+                            <div class="map-info" id="mapInfo">
+                                <div class="map-info-row">
+                                    <span class="map-distance" id="mapDistance"></span>
+                                    <span class="map-time" id="mapTime"></span>
+                                </div>
                             </div>
                         </div>
 
@@ -669,19 +692,6 @@
                         
                     </div>
                 </form>
-                </div>
-                <div class="booking-map-wrapper">
-                    <div class="map-placeholder">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <h3>Map Under Development</h3>
-                        <p>Apple Maps integration coming soon. Your route will be displayed here.</p>
-                    </div>
-                    <div class="map-info" id="mapInfo">
-                        <div class="map-info-row">
-                            <span class="map-distance" id="mapDistance"></span>
-                            <span class="map-time" id="mapTime"></span>
-                        </div>
-                    </div>
                 </div>
                 </div>
                 <div class="form-navigation" id="stepNav">

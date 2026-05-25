@@ -93,6 +93,7 @@ function initBookingForm() {
     setupAddStop();
     setupChildSeat();
     setupProgressStepClicks();
+    setupStepDropdown();
 }
 
 
@@ -105,20 +106,33 @@ function setupProgressStepClicks() {
     document.querySelectorAll('.progress-step').forEach(el => {
         el.addEventListener('click', function() {
             const targetStep = parseInt(this.dataset.step);
-            let highest = 0;
-            document.querySelectorAll('.progress-step').forEach(ps => {
-                if (ps.classList.contains('completed') || ps.classList.contains('active')) {
-                    highest = Math.max(highest, parseInt(ps.dataset.step));
-                }
-            });
-            if (targetStep <= highest) {
-                goToStep(targetStep);
-            } else {
-                showNotification('Please complete the current step first', 'error');
-            }
+            navigateToStep(targetStep);
         });
         el.style.cursor = 'pointer';
     });
+}
+
+function navigateToStep(targetStep) {
+    let highest = 0;
+    document.querySelectorAll('.progress-step').forEach(ps => {
+        if (ps.classList.contains('completed') || ps.classList.contains('active')) {
+            highest = Math.max(highest, parseInt(ps.dataset.step));
+        }
+    });
+    if (targetStep <= highest) {
+        goToStep(targetStep);
+    } else {
+        showNotification('Please complete the current step first', 'error');
+    }
+}
+
+function setupStepDropdown() {
+    const dropdown = document.getElementById('stepDropdown');
+    if (dropdown) {
+        dropdown.addEventListener('change', function() {
+            navigateToStep(parseInt(this.value));
+        });
+    }
 }
 
 function goToStep(stepNumber) {
@@ -149,16 +163,9 @@ function goToStep(stepNumber) {
         bookingContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    const mapWrapper = document.querySelector('.booking-map-wrapper');
-    const formWrapper = document.querySelector('.booking-form-wrapper');
-    if (mapWrapper && formWrapper) {
-        if (stepNumber === 1 || stepNumber === 5) {
-            mapWrapper.style.display = '';
-            formWrapper.style.flex = '0 0 55%';
-        } else {
-            mapWrapper.style.display = 'none';
-            formWrapper.style.flex = '1';
-        }
+    const stepDropdown = document.getElementById('stepDropdown');
+    if (stepDropdown) {
+        stepDropdown.value = stepNumber;
     }
 
     const navBack = document.getElementById('navBack');
