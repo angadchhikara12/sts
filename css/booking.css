@@ -1660,8 +1660,8 @@ textarea {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
-    padding-top: 25px;
+    margin-top: 5px;
+    padding-top: 20px;
     border-top: 1px solid rgba(221, 186, 94, 0.2);
 }
 
@@ -2186,20 +2186,7 @@ textarea {
 .booking-form-wrapper {
     flex: 1;
     min-width: 0;
-    position: relative;
-    padding-top: 30px;
     min-height: 600px;
-}
-
-.booking-form-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--gold-accent), var(--gold-light), var(--gold-accent));
-    opacity: 0.8;
 }
 
 .booking-map-wrapper {
