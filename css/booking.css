@@ -1661,6 +1661,7 @@ textarea {
     justify-content: space-between;
     align-items: center;
     margin-top: -100px;
+    margin-bottom: 10px;
     padding-top: 20px;
     border-top: 1px solid rgba(221, 186, 94, 0.2);
 }
