@@ -953,7 +953,7 @@ function geocodeAddress(query) {
     if (!query || query.length < 1) return Promise.resolve([]);
     const key = query.toLowerCase().trim();
     if (geocodeCache.has(key)) return Promise.resolve(geocodeCache.get(key));
-    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${GEOAPIFY_KEY}&limit=5`;
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${GEOAPIFY_KEY}&limit=10`;
     return fetch(url)
         .then(r => r.json())
         .then(data => {
