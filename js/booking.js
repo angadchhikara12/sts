@@ -958,6 +958,7 @@ function geocodeAddress(query) {
         .then(r => r.json())
         .then(data => {
             const results = data.features || [];
+            console.log('Geoapify results for "' + query + '":', results.length, results.map(r => r.properties?.formatted + ' | country=' + r.properties?.country_code + ' state=' + r.properties?.state_code));
             geocodeCache.set(key, results);
             if (geocodeCache.size > 100) {
                 const first = geocodeCache.keys().next().value;
@@ -965,7 +966,7 @@ function geocodeAddress(query) {
             }
             return results;
         })
-        .catch(() => []);
+        .catch(e => { console.error('Geoapify error:', e); return []; });
 }
 
 function renderGeocodeResults(input, suggestions, results, type) {
@@ -991,9 +992,15 @@ function renderGeocodeResults(input, suggestions, results, type) {
     }
     results = results.filter(r => {
         const p = r.properties || {};
-        return p.country_code === 'us' && p.state_code === 'CA';
+        const cc = (p.country_code || '').toLowerCase();
+        return cc === 'us' || cc === 'ca';
     });
-    if (results.length === 0) { suggestions.classList.remove('active'); return; }
+    if (results.length === 0) {
+        console.warn('No results for:', input.value);
+        suggestions.innerHTML = '<div class="address-suggestion-item" style="color:var(--soft-gray);cursor:default"><i class="fas fa-exclamation-circle"></i> No addresses found — try a different search</div>';
+        suggestions.classList.add('active');
+        return;
+    }
     results.forEach(r => {
         const div = document.createElement('div');
         div.className = 'address-suggestion-item';
@@ -1103,7 +1110,8 @@ function setupBillingAutocomplete() {
             if (!results || results.length === 0) { suggestions.classList.remove('active'); return; }
             results = results.filter(r => {
                 const p = r.properties || {};
-                return p.country_code === 'us' || p.country_code === 'ca';
+                const cc = (p.country_code || '').toLowerCase();
+                return cc === 'us' || cc === 'ca';
             });
             if (results.length === 0) { suggestions.classList.remove('active'); return; }
             results.forEach(r => {
@@ -1146,7 +1154,8 @@ function setupBillingAutocomplete() {
             if (!results || results.length === 0) { suggestions.classList.remove('active'); return; }
             results = results.filter(r => {
                 const p = r.properties || {};
-                return p.country_code === 'us' || p.country_code === 'ca';
+                const cc = (p.country_code || '').toLowerCase();
+                return cc === 'us' || cc === 'ca';
             });
             if (results.length === 0) { suggestions.classList.remove('active'); return; }
             results.forEach(r => {
